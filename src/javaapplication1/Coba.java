@@ -17,13 +17,13 @@ import java.sql.Statement;
  */
 
 public class Coba extends Mysql {
-    static int jml1=1;
+    static int jml1=0;
     public static void main(String[]args){
         String b="";
         String a="";
         String c="";
         String d="";
-        
+//        
         try {
             Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/sbd_takehome?zeroDateTimeBehavior=convertToNull",USER,PASS);
             Statement stmt = conn.createStatement();
@@ -37,7 +37,7 @@ public class Coba extends Mysql {
         } catch (Exception e) {
         }
         int jumlah = Integer.parseInt(d);
-        
+//        
         try {
             Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/sbd_takehome?zeroDateTimeBehavior=convertToNull",USER,PASS);
             Statement stmt = conn.createStatement();
@@ -50,18 +50,21 @@ public class Coba extends Mysql {
             conn.close();
         } catch (Exception e) {
         }
-        
-        
-        for(int jml=1;jml<jumlah;jml++){
-            
-            
-            
+//        
+//        
+        for(int jml=1;jml<jumlah+1;jml++){
+//            
+//            
+//            
             try {
                 
                 Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/sbd_takehome?zeroDateTimeBehavior=convertToNull",USER,PASS);
                 Statement stmt = conn.createStatement();
-                ResultSet rs;
-                rs = stmt.executeQuery("SELECT * FROM knj_dos where NO='" + jml1 +"'" );
+//                ResultSet rs;
+                String query="SELECT * FROM knj_dos limit ?,1";
+                PreparedStatement preparedStmt = conn.prepareStatement(query);
+                preparedStmt.setInt   (1,jml1);
+                ResultSet rs=preparedStmt.executeQuery();
                 while ( rs.next() ) {
                     a = rs.getString("JAWAB");
                     c = rs.getString("KD_DOS");
@@ -70,10 +73,10 @@ public class Coba extends Mysql {
                 conn.close();
             } catch (Exception e) {
             }
-            
+//            
             int total=0,j=0,jawaban_kunci=0,berbeda=0,tidak_terjawab=0;
             int k=4;
-//            a="1111511111111111111111151";
+//            String a="1111511111111111111111151";
 //            b="1234123412341234123412341234123412341234123412341234123412341234123412341234123412341234123412344321";
 for(int i=0;i<a.length();i++){
     char jwb_kd_dos[]=a.toCharArray();
@@ -111,11 +114,12 @@ for(int i=0;i<a.length();i++){
         }
         try{
         Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:3306/sbd_takehome?zeroDateTimeBehavior=convertToNull",USER,PASS);
-        String query = "UPDATE KNJ_DOS SET SKORE=?,RASIO=?,GRADE=? WHERE NO='" + jml1 +"'";
+        String query = "UPDATE KNJ_DOS SET SKORE=?,RASIO=?,GRADE=? WHERE JAWAB=?";
         PreparedStatement preparedStmt = conn.prepareStatement(query);
         preparedStmt.setInt   (1, total);
         preparedStmt.setInt   (2, rasio);
         preparedStmt.setString(3, grade);
+        preparedStmt.setString(4, a);
         
         preparedStmt.executeUpdate();
         
@@ -128,8 +132,8 @@ for(int i=0;i<a.length();i++){
             jml1=jml1+1;
             }
 }
-
-
+//
+//
         }
     }
     
